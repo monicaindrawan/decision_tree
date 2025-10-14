@@ -12,3 +12,6 @@ def load_data(file):
 
 X_train, y_train = load_data("wifi_db/noisy_dataset.txt")
 X_test, y_test = load_data("wifi_db/clean_dataset.txt")
+
+# This is what we loop through later when checking through entropy stuff
+#for index in range(X.shape[1]):
