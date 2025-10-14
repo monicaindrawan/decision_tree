@@ -8,6 +8,7 @@ class BinaryTreeNode:
         self.value = value
 
 
+
 def entropy(y):
     s = 0
     for class_label in np.unique(y):
@@ -16,12 +17,52 @@ def entropy(y):
 
     return s
 
-def information_gain(S_all, S_left, S_right):
-    pass
 
 
-def find_split(X, y):
-    pass
+def find_ideal_split(x_sorted, y_sorted, splits):
+    """
+    Finds the optimal split condition for a feature (x) based on maximizing information gain
+    for the target variable (y).
+
+    Args:
+        x_sorted (np.array): A list or array of **sorted** feature values.
+        y_sorted (np.array): A list or array of corresponding target/class
+                                     labels, **sorted** according to the order in `x_sorted`.
+        splits (np.array): A list of integer indices where a split can occur.
+                                   These indices indicate the point *after* which the
+                                   data is split (i.e., the first element of the right child).
+
+    Returns:
+        tuple(float): The feature value (split point) that yields the maximum information gain.
+               This is calculated as the midpoint between the last element of the left
+               split and the first element of the right split.
+    """
+       
+    # calculate total entropy
+    total_entropy = entropy(y_sorted)
+
+    split_value = 0
+    max_gain = 0
+
+    for s in splits:
+        # calculate the entropy of each split
+        left_list = y_sorted[:s]
+        right_list = y_sorted[s:]
+        left_entropy = entropy(left_list)
+        right_entropy = entropy(right_list)
+
+        # calculate the weighted entropy and the gain
+        weighted_entropy = len(left_list) / len(y_sorted) * left_entropy + len(right_list) / len(y_sorted) * right_entropy
+        gain = total_entropy - weighted_entropy
+
+        # if the gain is bigger than the previously calculated gain, find the split condition
+        if gain > max_gain:
+            split_value = (x_sorted[s-1] + x_sorted[s]) / 2
+            max_gain = gain
+
+    return split_value, max_gain
+
+
 
 def find_ordered_value_changes(X, y, index):
     """
