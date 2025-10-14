@@ -109,16 +109,19 @@ def find_best_split_feature(X, y):
     best_split_value = 0
     best_feature_index = 0
 
+    # for each feature (not each data entry)
     for feature_index in range(X.shape[1]):
+        # find the ordered y and y based on each x feature values
         splits, x_sorted, y_sorted = find_ordered_value_changes(X, y, feature_index)
 
+        # for each feature, find the best split value and its entropy gain
         feature_split_value, feature_gain = find_ideal_split(x_sorted, y_sorted, splits)
 
+        # make sure the best_split_value is not just 0
         if feature_index == 0:
             best_split_value = feature_split_value
-
-        print(feature_index, feature_split_value, feature_gain)
-
+        
+        # update the value, gain and feature_index
         if feature_gain > max_gain:
             best_split_value = feature_split_value
             max_gain = feature_gain
