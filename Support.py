@@ -18,6 +18,46 @@ def entropy(y):
     return s
 
 
+def find_ordered_value_changes(X, y, index):
+    """
+    Identify positions where the target variable y changes when the dataset
+    is sorted by a single feature column in X.
+
+    Parameters
+    ----------
+    X : np.ndarray, shape (n_samples, n_features)
+        Feature matrix containing the input data.
+
+    y : np.ndarray, shape (n_samples,)
+        Target vector or class labels corresponding to each sample in `X`.
+
+    index : int
+        The column index of `X` to use for sorting and analysis.
+
+    Returns
+    -------
+    change_indices : list of int
+        Indices (in sorted order) where the value of y changes
+        as X[:, index] increases.  
+
+    X_sorted : np.ndarray, shape (n_samples, n_features)
+        The feature matrix sorted by column `index`.
+
+    y_sorted : np.ndarray, shape (n_samples,)
+        The target vector sorted according to column `index`.
+    """
+    
+    sorted_indices = np.argsort(X[:, index])
+    y_sorted = y[sorted_indices]
+    y_current = y_sorted[0]
+    change_index = []
+    for i in range(1, len(y_sorted)):
+        if y_sorted[i] != y_current:
+            change_index.append(i)
+        y_current = y_sorted[i]
+    return change_index, X[sorted_indices][:,index], y_sorted
+
+
 
 def find_ideal_split(x_sorted, y_sorted, splits):
     """
@@ -64,46 +104,24 @@ def find_ideal_split(x_sorted, y_sorted, splits):
 
 
 
-def find_ordered_value_changes(X, y, index):
-    """
-    Identify positions where the target variable y changes when the dataset
-    is sorted by a single feature column in X.
+def find_best_split_feature(X, y):
+    max_gain = 0
+    best_split_value = 0
+    best_feature_index = 0
 
-    Parameters
-    ----------
-    X : np.ndarray, shape (n_samples, n_features)
-        Feature matrix containing the input data.
+    for feature_index in range(X.shape[1]):
+        splits, x_sorted, y_sorted = find_ordered_value_changes(X, y, feature_index)
 
-    y : np.ndarray, shape (n_samples,)
-        Target vector or class labels corresponding to each sample in `X`.
+        feature_split_value, feature_gain = find_ideal_split(x_sorted, y_sorted, splits)
 
-    index : int
-        The column index of `X` to use for sorting and analysis.
+        if feature_index == 0:
+            best_split_value = feature_split_value
 
-    Returns
-    -------
-    change_indices : list of int
-        Indices (in sorted order) where the value of y changes
-        as X[:, index] increases.  
+        print(feature_index, feature_split_value, feature_gain)
 
-    X_sorted : np.ndarray, shape (n_samples, n_features)
-        The feature matrix sorted by column `index`.
+        if feature_gain > max_gain:
+            best_split_value = feature_split_value
+            max_gain = feature_gain
+            best_feature_index = feature_index
 
-    y_sorted : np.ndarray, shape (n_samples,)
-        The target vector sorted according to column `index`.
-    """
-    
-    sorted_indices = np.argsort(X[:, index])
-    y_sorted = y[sorted_indices]
-    y_current = y_sorted[0]
-    change_index = []
-    for i in range(1, len(y_sorted)):
-        if y_sorted[i] != y_current:
-            change_index.append(i)
-        y_current = y_sorted[i]
-    return change_index, X[sorted_indices], y_sorted
-
-
-
-def decision_tree_learning(X, y, depth):
-    pass
+    return best_feature_index, best_split_value
