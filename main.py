@@ -6,10 +6,10 @@ def load_data(filepath):
     y = []
     data = np.loadtxt(filepath)
     for row in data:
-        X.append(list(map(float,row[0:-1])))
+        X.append(np.array(list(map(float,row[0:-1]))))
         y.append(int(row[-1]))
 
-    return X, y
+    return np.array(X), np.array(y)
 
     
 X_train, y_train = load_data("wifi_db/noisy_dataset.txt")
