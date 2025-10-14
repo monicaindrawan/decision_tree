@@ -1,8 +1,8 @@
 import numpy as np
 
 def load_data(file):
-    data = np.loadtxt(file)
-    return data
+
+
     
 
 def decision_tree_learning():
