@@ -1,13 +1,16 @@
 import numpy as np
 
-def load_data(file):
-    data = np.loadtxt(file)
-   
+
+def load_data(filepath):
+    X = []
+    y = []
+    data = np.loadtxt(filepath)
+    for row in data:
+        X.append(list(map(float,row[0:-1])))
+        y.append(int(row[-1]))
+
+    return X, y
 
     
-
-def decision_tree_learning():
-    pass
-
-clean_data = load_data("wifi_db/noisy_dataset.txt")
-noisy_data = load_data("wifi_db/clean_dataset.txt")
+X_train, y_train = load_data("wifi_db/noisy_dataset.txt")
+X_test, y_test = load_data("wifi_db/clean_dataset.txt")
