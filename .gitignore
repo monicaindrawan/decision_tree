@@ -24,4 +24,4 @@ build/
 .coverage
 coverage.xml
 
-.ipynb
+*.ipynb
