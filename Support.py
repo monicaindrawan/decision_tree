@@ -55,7 +55,7 @@ def find_ordered_value_changes(X, y, index):
         if y_sorted[i] != y_current:
             change_index.append(i)
         y_current = y_sorted[i]
-    return change_index, X[sorted_indices][:,index], y_sorted
+    return change_index, X[sorted_indices], y_sorted
 
 
 
@@ -112,7 +112,7 @@ def find_best_split_feature(X, y):
     for feature_index in range(X.shape[1]):
         splits, x_sorted, y_sorted = find_ordered_value_changes(X, y, feature_index)
 
-        feature_split_value, feature_gain = find_ideal_split(x_sorted, y_sorted, splits)
+        feature_split_value, feature_gain = find_ideal_split(x_sorted[:,feature_index], y_sorted, splits)
 
         if feature_index == 0:
             best_split_value = feature_split_value
