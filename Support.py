@@ -1,13 +1,6 @@
 import numpy as np
 
 
-class BinaryTreeNode:
-    def __init__(self, value, left=None, right=None):
-        self.left = left
-        self.right = right
-        self.value = value
-
-
 
 def entropy(y):
     s = 0
@@ -23,28 +16,26 @@ def find_ordered_value_changes(X, y, index):
     Identify positions where the target variable y changes when the dataset
     is sorted by a single feature column in X.
 
-    Parameters
-    ----------
-    X : np.ndarray, shape (n_samples, n_features)
-        Feature matrix containing the input data.
+    Args:
+        X : np.ndarray, shape (n_samples, n_features)
+            Feature matrix containing the input data.
 
-    y : np.ndarray, shape (n_samples,)
-        Target vector or class labels corresponding to each sample in `X`.
+        y : np.ndarray, shape (n_samples,)
+            Target vector or class labels corresponding to each sample in `X`.
 
-    index : int
-        The column index of `X` to use for sorting and analysis.
+        index : int
+            The column index of `X` to use for sorting and analysis.
 
-    Returns
-    -------
-    change_indices : list of int
-        Indices (in sorted order) where the value of y changes
-        as X[:, index] increases.  
+    Returns:
+        change_indices : list of int
+            Indices (in sorted order) where the value of y changes
+            as X[:, index] increases.  
 
-    X_sorted : np.ndarray, shape (n_samples, n_features)
-        The feature matrix sorted by column `index`.
+        X_sorted : np.ndarray, shape (n_samples, n_features)
+            The feature matrix sorted by column `index`.
 
-    y_sorted : np.ndarray, shape (n_samples,)
-        The target vector sorted according to column `index`.
+        y_sorted : np.ndarray, shape (n_samples,)
+            The target vector sorted according to column `index`.
     """
     
     sorted_indices = np.argsort(X[:, index])
@@ -55,7 +46,7 @@ def find_ordered_value_changes(X, y, index):
         if y_sorted[i] != y_current:
             change_index.append(i)
         y_current = y_sorted[i]
-    return change_index, X[sorted_indices][:,index], y_sorted
+    return change_index, X[sorted_indices], y_sorted
 
 
 
@@ -109,19 +100,16 @@ def find_best_split_feature(X, y):
     best_split_value = 0
     best_feature_index = 0
 
-    # for each feature (not each data entry)
     for feature_index in range(X.shape[1]):
-        # find the ordered y and y based on each x feature values
         splits, x_sorted, y_sorted = find_ordered_value_changes(X, y, feature_index)
 
-        # for each feature, find the best split value and its entropy gain
-        feature_split_value, feature_gain = find_ideal_split(x_sorted, y_sorted, splits)
+        feature_split_value, feature_gain = find_ideal_split(x_sorted[:,feature_index], y_sorted, splits)
 
-        # make sure the best_split_value is not just 0
         if feature_index == 0:
             best_split_value = feature_split_value
-        
-        # update the value, gain and feature_index
+
+        #print(feature_index, feature_split_value, feature_gain)
+
         if feature_gain > max_gain:
             best_split_value = feature_split_value
             max_gain = feature_gain
