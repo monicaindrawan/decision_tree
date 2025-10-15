@@ -2,6 +2,17 @@ import numpy as np
 from Tree import DecisionTree
 
 def evaluate(test_db, trained_tree):
+    """
+    Calculate the accuracy from validation dataset
+
+    Args:
+        test_db : tuple of np.ndarray, shape (n_samples, n_features), (n_samples, 1)
+        trained_tree : class, Decision tree node
+
+    Returns:
+        accuracy : int
+            The model accuracy with regards to the validation data 
+    """
     test_data, test_classes = test_db
 
     predicted_classes = trained_tree.predict(test_data)
@@ -12,6 +23,17 @@ def evaluate(test_db, trained_tree):
 
 
 def cross_validation(X_data, y_data, k=10):
+    """
+    Calculate the accuracy from validation dataset using 10 cross validation approach
+
+    Args:
+        X_data : np.ndarray, shape (n_samples, n_features)
+        y_data : np.ndarray, shape (n_samples, 1)
+
+    Returns:
+        average_accuracy : int
+            The average accuracy with regards to the validation data
+    """
     X_folds = np.array_split(X_data, k)
     y_folds = np.array_split(y_data, k)
 
