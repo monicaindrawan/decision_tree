@@ -1,5 +1,6 @@
 import numpy as np
 from Support import *
+from evaluation import accuracy
 
 
 class Node():
@@ -63,18 +64,6 @@ class DecisionTree():
         if(self.max_depth < depth):
             self.max_depth = depth
 
-        # #Checks if any split has occured. If none then this is terminal.
-        # if len(X_left) == len(X):
-        #     ### IMPORTANT(KINDA?): IDK why some of these arrays are like [1, 1, 1, 3, 1, 1, 1]. I don't see why it can't split these from our
-        #     ### code above but I needed to do this otherwise stuck in infinite recursion.
-        #     ### Anyways just something to think about if you read this and remember to delete this comment if we figure it out/before SUBMISSION
-
-        #     # Returns most frequent value in array 
-        #     return Node(value = np.argmax(np.bincount(y_left)), depth = depth +1, parent = parent)
-
-        # if len(X_right) == len(X):
-        #     return Node(value = np.argmax(np.bincount(y_right)), depth = depth+1, parent = parent)
-
         node = Node(
             depth = depth,
             threshold=best_split_value,
@@ -117,7 +106,17 @@ class DecisionTree():
     def predict(self, X):
         return np.array([self._traverse_tree(row) for row in X])
     
+    
     def _get_node_with_leaves(self, node=None, result_list=[]):
+        """ Fetch all nodes with two leaves as its child
+
+        Args:
+            node (Node) : Node class that are currently being checked
+            result_list (List) : List to store nodes with two leaves
+
+        Returns:
+            None
+        """
         if node is None:
             node = self.root
 
@@ -132,9 +131,49 @@ class DecisionTree():
 
         if not node.right.is_terminal_node():
             self._get_node_with_leaves(node.right, result_list)
+
+
+    def _try_merge(self, parent_node, mergable_node, merged_node, X_val, y_val):
+        """ Try to merge nodes with two leaves if accuracy improves
+
+        Args:
+            parent_node (Node) : parent of the Node Class that are currently being checked
+            mergable_node (Node) : Node class that are currently being checked
+            merged_node (Node) : Node class after its two leaves being removed
+            X_val (nd.array) : ndarray containing features on validation dataset
+            y_val (nd.array) : ndarray containing labels on validation dataset
+
+        Returns:
+            bool : True if node is being pruned
+        """
+        predicted_classes = self.predict(X_val)
+        accuracy_pre_merge = accuracy(y_val, predicted_classes)
+        print(f"Pre merge accuracy: {accuracy_pre_merge}")
+
+        side = "left" if mergable_node is parent_node.left else "right"
+        original = getattr(parent_node, side)
+        setattr(parent_node, side, merged_node)
+
+        predicted_classes = self.predict(X_val)
+        accuracy_post_merge = accuracy(y_val, predicted_classes)
+        print(f"Post merge accuracy: {accuracy_post_merge}")
+
+        if accuracy_post_merge < accuracy_pre_merge:
+            print("Reverting merge")
+            setattr(parent_node, side, original)
+            return False
+        return True
     
     def prune_tree(self, X_val, y_val):
+        """ Continually prune the decision tree until no further improvements (accuracy) are seen
 
+        Args:
+            X_val (nd.array) : ndarray containing features on validation dataset
+            y_val (nd.array) : ndarray containing labels on validation dataset
+
+        Returns:
+            None
+        """
         layer = 0    
         while True:
             num_of_pruned_nodes = 0
@@ -142,10 +181,6 @@ class DecisionTree():
             self._get_node_with_leaves(result_list=mergable_nodes)
 
             for mergable_node in mergable_nodes:
-                predicted_classes = self.predict(X_val)
-                acc_pre_merge = np.sum(predicted_classes == y_val)/len(X_val)
-                print(f"Pre merge accuracy: {acc_pre_merge}")
-
                 parent_node = mergable_node.parent
 
                 merged_node = Node(
@@ -154,24 +189,7 @@ class DecisionTree():
                     parent = parent_node
                 )
 
-                node_location = "LEFT" if parent_node.left is mergable_node else "RIGHT"
-
-                if node_location == "LEFT":
-                    parent_node.left = merged_node
-                else:
-                    parent_node.right = merged_node
-                
-                predicted_classes = self.predict(X_val)
-                acc_post_merge = np.sum(predicted_classes == y_val)/len(X_val)
-                print(f"Post merge accuracy: {acc_post_merge}")
-
-                if acc_post_merge < acc_pre_merge:
-                    print(f"Reverting merge")
-                    if node_location == "LEFT":
-                        parent_node.left = mergable_node
-                    else:
-                        parent_node.right = mergable_node
-                else:
+                if self._try_merge(parent_node, mergable_node, merged_node, X_val, y_val):
                     num_of_pruned_nodes += 1
 
             print(f"Number of pruned nodes on this layer: {num_of_pruned_nodes}")
