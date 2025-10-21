@@ -43,6 +43,7 @@ def nested_cross_validation(X, y):
     n_inner_folds = 9
     running_sum_accuracy = 0
     count = 0
+    confusion_matrix_list = []
 
     for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(X), random_generator = np.random.default_rng())):
         x_trainval = X[trainval_indices, :]
@@ -61,15 +62,24 @@ def nested_cross_validation(X, y):
             tree = DecisionTree()
             tree.fit(x_train, y_train)
             tree.prune_tree(x_val, y_val)
-            accuracy = evaluate((x_test, y_test), tree)
+            #accuracy_list.append(evaluate((x_test, y_test), tree))
+            predictions = tree.predict(x_test)
+            confusion_matrix_list.append(confusion_matrix(y_test, predictions))
             #y_predictions = tree.predict(x_test)
             #accuracy = accuracy(y_test, y_predictions)
-            running_sum_accuracy += accuracy
+            #running_sum_accuracy += accuracy
             count += 1
             print(count)
 
-    average_accuracy = running_sum_accuracy/(n_outer_folds*n_inner_folds)
-    print(average_accuracy)
+    average_confusion_matrix = np.sum(confusion_matrix_list, axis=0)/(n_outer_folds*n_inner_folds)
+    average_accuracy = accuracy_from_confusion(average_confusion_matrix)
+    average_precision = precision_from_confusion(average_confusion_matrix)
+    average_recall = recall_from_confusion(average_confusion_matrix)
+    average_f1 = f1_score(average_precision[0], average_recall[0])
+
+
+
+    print(average_confusion_matrix, average_accuracy, average_precision, average_recall, average_f1)
 
 
 def evaluate(test_db, trained_tree):
@@ -112,7 +122,7 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
     if not class_labels:
         class_labels = np.unique(np.concatenate((y_gold, y_prediction)))
 
-    confusion = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
+    confusion = np.zeros((len(class_labels), len(class_labels)))
 
     # for each correct class (row),
     # compute how many instances are predicted for each class (columns)
@@ -173,7 +183,7 @@ def accuracy_from_confusion(confusion):
         return 0.
     
 
-def precision(y_gold, y_prediction):
+def precision_from_confusion(confusion):
     """ Compute the precision score per class given the ground truth and predictions
 
     Also return the macro-averaged precision across classes.
@@ -189,7 +199,6 @@ def precision(y_gold, y_prediction):
             - macro-precision is macro-averaged precision (a float)
     """
 
-    confusion = confusion_matrix(y_gold, y_prediction)
     p = np.zeros((len(confusion), ))
     for c in range(confusion.shape[0]):
         if np.sum(confusion[:, c]) > 0:
@@ -213,7 +222,7 @@ def precision(y_gold, y_prediction):
 
 
 
-def recall(y_gold, y_prediction):
+def recall_from_confusion(confusion):
     """ Compute the recall score per class given the ground truth and predictions
 
     Also return the macro-averaged recall across classes.
@@ -229,7 +238,6 @@ def recall(y_gold, y_prediction):
             - macro-recall is macro-averaged recall (a float)
     """
 
-    confusion = confusion_matrix(y_gold, y_prediction)
     r = np.zeros((len(confusion), ))
     for c in range(confusion.shape[0]):
         if np.sum(confusion[c, :]) > 0:
@@ -252,7 +260,7 @@ def recall(y_gold, y_prediction):
     return (r, macro_r)
 
 
-def f1_score(y_gold, y_prediction):
+def f1_score(precisions, recalls):
     """ Compute the F1-score per class given the ground truth and predictions
 
     Also return the macro-averaged F1-score across classes.
@@ -267,9 +275,6 @@ def f1_score(y_gold, y_prediction):
               f1-score for class c
             - macro-f1 is macro-averaged f1-score (a float)
     """
-
-    (precisions, macro_p) = precision(y_gold, y_prediction)
-    (recalls, macro_r) = recall(y_gold, y_prediction)
 
     # just to make sure they are of the same length
     assert len(precisions) == len(recalls)
