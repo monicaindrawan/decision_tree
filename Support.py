@@ -108,7 +108,7 @@ def find_best_split_feature(X, y):
         if feature_index == 0:
             best_split_value = feature_split_value
 
-        #print(feature_index, feature_split_value, feature_gain)
+        # print(feature_index, feature_split_value, feature_gain)
 
         if feature_gain > max_gain:
             best_split_value = feature_split_value
@@ -116,3 +116,45 @@ def find_best_split_feature(X, y):
             best_feature_index = feature_index
 
     return best_feature_index, best_split_value
+
+
+
+
+
+def find_ideal_split_monica(X, y):
+    best_gain = float("-inf")
+    best_split_value = float("-inf")
+    best_feature = 0
+    total_entropy = entropy(y)
+    for i in range(X.shape[1]):
+        sorted_indices = X[:,i].argsort()
+        X_sorted = X[sorted_indices]
+        y_sorted = y[sorted_indices]
+
+        for s in range(X.shape[0]-1):
+            if abs(X_sorted[s+1,i] - X_sorted[s,i]) < 0.000000001:
+                continue
+            split_value = (X_sorted[s,i] + X_sorted[s+1,i])/2.0
+
+            y_left = y_sorted[:s]
+            y_right = y_sorted[s:]
+
+            left_entropy = entropy(y_left)
+            right_entropy = entropy(y_right)
+
+            weighted_entropy = len(y_left) / len(y_sorted) * left_entropy + len(y_right) / len(y_sorted) * right_entropy
+            gain = total_entropy - weighted_entropy
+
+            if gain > best_gain:
+                best_gain = gain
+                best_split_value = split_value
+                best_feature = i
+    
+    # print(best_gain, best_feature, best_split_value)
+    # sorted_indices_3 = X[:,3].argsort()
+    # X_sorted = X[sorted_indices_3]
+    # print(X_sorted[:, 3],y[sorted_indices_3])
+    return best_feature, best_split_value
+
+        
+
