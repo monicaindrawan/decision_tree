@@ -1,76 +1,4 @@
 import numpy as np
-from Tree import DecisionTree
-
-
-
-def cross_validation(X_data, y_data, k=10):
-    """
-    Calculate the accuracy from validation dataset using 10 cross validation approach
-
-    Args:
-        X_data : np.ndarray, shape (n_samples, n_features)
-        y_data : np.ndarray, shape (n_samples, 1)
-
-    Returns:
-        average_accuracy : int
-            The average accuracy with regards to the validation data
-    """
-    X_folds = np.array_split(X_data, k)
-    y_folds = np.array_split(y_data, k)
-
-    scores = []
-
-    for i in range(k):
-        X_test_fold = X_folds[i]
-        y_test_fold = y_folds[i]
-
-        X_train_fold = np.vstack(X_folds[:i] + X_folds[i+1:])
-        y_train_fold = np.hstack(y_folds[:i] + y_folds[i+1:])
-
-        tree = DecisionTree()
-
-        tree.fit(X_train_fold, y_train_fold)
-
-        score = evaluate((X_test_fold,y_test_fold), tree)
-        scores.append(score)
-    
-    average_accuracy = np.mean(scores)
-    return average_accuracy
-
-
-def nested_cross_validation(X, y):
-    n_outer_folds = 10
-    n_inner_folds = 9
-    running_sum_accuracy = 0
-    count = 0
-
-    for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(X), random_generator = np.random.default_rng())):
-        x_trainval = X[trainval_indices, :]
-        y_trainval = y[trainval_indices]
-        x_test = X[test_indices, :]
-        y_test = y[test_indices]
-
-        splits = train_test_k_fold(n_inner_folds, len(x_trainval))
-
-        for (train_indices, val_indices) in splits:
-            x_train = x_trainval[train_indices, :]
-            y_train = y_trainval[train_indices]
-            x_val = x_trainval[val_indices, :]
-            y_val = y_trainval[val_indices]
-
-            tree = DecisionTree()
-            tree.fit(x_train, y_train)
-            tree.prune_tree(x_val, y_val)
-            accuracy = evaluate((x_test, y_test), tree)
-            #y_predictions = tree.predict(x_test)
-            #accuracy = accuracy(y_test, y_predictions)
-            running_sum_accuracy += accuracy
-            count += 1
-            print(count)
-
-    average_accuracy = running_sum_accuracy/(n_outer_folds*n_inner_folds)
-    print(average_accuracy)
-
 
 def evaluate(test_db, trained_tree):
     """
@@ -92,7 +20,6 @@ def evaluate(test_db, trained_tree):
     return accuracy
 
 
-
 def confusion_matrix(y_gold, y_prediction, class_labels=None):
     """ Compute the confusion matrix.
 
@@ -112,7 +39,7 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
     if not class_labels:
         class_labels = np.unique(np.concatenate((y_gold, y_prediction)))
 
-    confusion = np.zeros((len(class_labels), len(class_labels)), dtype=np.int)
+    confusion = np.zeros((len(class_labels), len(class_labels)))
 
     # for each correct class (row),
     # compute how many instances are predicted for each class (columns)
@@ -173,7 +100,7 @@ def accuracy_from_confusion(confusion):
         return 0.
     
 
-def precision(y_gold, y_prediction):
+def precision_from_confusion(confusion):
     """ Compute the precision score per class given the ground truth and predictions
 
     Also return the macro-averaged precision across classes.
@@ -189,7 +116,6 @@ def precision(y_gold, y_prediction):
             - macro-precision is macro-averaged precision (a float)
     """
 
-    confusion = confusion_matrix(y_gold, y_prediction)
     p = np.zeros((len(confusion), ))
     for c in range(confusion.shape[0]):
         if np.sum(confusion[:, c]) > 0:
@@ -213,7 +139,7 @@ def precision(y_gold, y_prediction):
 
 
 
-def recall(y_gold, y_prediction):
+def recall_from_confusion(confusion):
     """ Compute the recall score per class given the ground truth and predictions
 
     Also return the macro-averaged recall across classes.
@@ -229,7 +155,6 @@ def recall(y_gold, y_prediction):
             - macro-recall is macro-averaged recall (a float)
     """
 
-    confusion = confusion_matrix(y_gold, y_prediction)
     r = np.zeros((len(confusion), ))
     for c in range(confusion.shape[0]):
         if np.sum(confusion[c, :]) > 0:
@@ -252,7 +177,7 @@ def recall(y_gold, y_prediction):
     return (r, macro_r)
 
 
-def f1_score(y_gold, y_prediction):
+def f1_score(precisions, recalls):
     """ Compute the F1-score per class given the ground truth and predictions
 
     Also return the macro-averaged F1-score across classes.
@@ -267,9 +192,6 @@ def f1_score(y_gold, y_prediction):
               f1-score for class c
             - macro-f1 is macro-averaged f1-score (a float)
     """
-
-    (precisions, macro_p) = precision(y_gold, y_prediction)
-    (recalls, macro_r) = recall(y_gold, y_prediction)
 
     # just to make sure they are of the same length
     assert len(precisions) == len(recalls)
