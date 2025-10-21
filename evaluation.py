@@ -1,6 +1,7 @@
 import numpy as np
 from Tree import DecisionTree
 
+
 def evaluate(test_db, trained_tree):
     """
     Calculate the accuracy from validation dataset
@@ -19,7 +20,7 @@ def evaluate(test_db, trained_tree):
     accuracy = np.sum(predicted_classes == test_classes)/len(test_data)
     
     return accuracy
-  
+
 
 
 def cross_validation(X_data, y_data, k=10):

@@ -1,6 +1,7 @@
 import numpy as np
 from Support import *
 
+
 class Node():
     """ Node class that contains information on splitting decision by the tree or contains the final value if it is a terminal node.
     
