@@ -1,6 +1,6 @@
 import numpy as np
 from Tree import DecisionTree
-from evaluation import evaluate, cross_validation
+from evaluation import *
 
 def load_data(file):
     data = np.loadtxt(file)
@@ -33,3 +33,5 @@ tree.prune_tree(X_val_noisy, y_val_noisy)
 
 # cross_validation_accuracy = cross_validation(X_noisy, y_noisy)
 # print(cross_validation_accuracy)
+
+nested_cross_validation(X_noisy, y_noisy)
