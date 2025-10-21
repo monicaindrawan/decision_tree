@@ -1,6 +1,6 @@
 import numpy as np
 from Tree import DecisionTree
-from evaluation import evaluate, cross_validation
+from evaluation import *
 
 
 def load_data(file):
@@ -35,3 +35,5 @@ print("Pre-pruning:", accuracy)
 
 # cross_validation_accuracy = cross_validation(X_noisy, y_noisy)
 # print(cross_validation_accuracy)
+
+nested_cross_validation(X_noisy, y_noisy)
