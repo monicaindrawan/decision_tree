@@ -38,8 +38,6 @@ def cross_validation(X_data, y_data, k=10):
     return average_accuracy
 
 
-<<<<<<< HEAD
-=======
 def train_val_test_k_fold(n_folds, n_instances):
     """ Generate train and test indices at each fold.
     
@@ -126,7 +124,6 @@ def evaluate(test_db, trained_tree):
     return accuracy
 
 
->>>>>>> 51ecae53225bc13daaee6f84e649fecb9d7ba97c
 
 def confusion_matrix(y_gold, y_prediction, class_labels=None):
     """ Compute the confusion matrix.
@@ -343,8 +340,6 @@ def k_fold_split(n_splits, n_instances, random_generator=np.random.default_rng()
 
     return split_indices
 
-# For quick testing
-k_fold_split(3, 20, rg)
 
 
 def train_test_k_fold(n_folds, n_instances, random_generator=np.random.default_rng()):
