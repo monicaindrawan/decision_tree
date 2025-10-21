@@ -38,15 +38,17 @@ def find_ordered_value_changes(X, y, index):
             The target vector sorted according to column `index`.
     """
     
-    sorted_indices = np.argsort(X[:, index])
+    x = X[:, index]
+    sorted_indices = np.argsort(x)
+    x_sorted = x[sorted_indices]
     y_sorted = y[sorted_indices]
-    y_current = y_sorted[0]
+    x_current = x_sorted[0]
     change_index = []
-    for i in range(1, len(y_sorted)):
-        if y_sorted[i] != y_current:
+    for i in range(1, len(x_sorted)):
+        if x_sorted[i] != x_current:
             change_index.append(i)
-        y_current = y_sorted[i]
-    return change_index, X[sorted_indices], y_sorted
+        x_current = x_sorted[i]
+    return change_index, x_sorted, y_sorted
 
 
 
@@ -103,7 +105,7 @@ def find_best_split_feature(X, y):
     for feature_index in range(X.shape[1]):
         splits, x_sorted, y_sorted = find_ordered_value_changes(X, y, feature_index)
 
-        feature_split_value, feature_gain = find_ideal_split(x_sorted[:,feature_index], y_sorted, splits)
+        feature_split_value, feature_gain = find_ideal_split(x_sorted, y_sorted, splits)
 
         if feature_index == 0:
             best_split_value = feature_split_value
@@ -116,7 +118,6 @@ def find_best_split_feature(X, y):
             best_feature_index = feature_index
 
     return best_feature_index, best_split_value
-
 
 
 def find_ideal_split_monica(X, y):

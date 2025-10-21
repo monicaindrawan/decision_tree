@@ -38,9 +38,6 @@ def cross_validation(X_data, y_data, k=10):
     return average_accuracy
 
 
-import numpy as np
-
-
 
 def confusion_matrix(y_gold, y_prediction, class_labels=None):
     """ Compute the confusion matrix.

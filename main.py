@@ -1,6 +1,7 @@
 import numpy as np
 from Tree import DecisionTree
-from evaluation import evaluate, cross_validation
+# from Evaluation import evaluate, cross_validation
+
 
 def load_data(file):
     data = np.loadtxt(file)
@@ -26,8 +27,8 @@ tree.fit(X_train_noisy, y_train_noisy)
 # val_db = (X_val_clean, y_val_clean)
 # tree.fit(X_train_clean, y_train_clean)
 
-accuracy = evaluate(val_db, tree)
-print(accuracy)
+# accuracy = evaluate(val_db, tree)
+# print(accuracy)
 
 tree.prune_tree(X_val_noisy, y_val_noisy)
 

@@ -51,7 +51,7 @@ class DecisionTree():
         if len(np.unique(y)) == 1:
             return Node(value = np.argmax(np.bincount(y)), depth = depth, parent = parent)
         
-        best_feature_index, best_split_value = find_best_split_feature(X, y)
+        best_feature_index, best_split_value = find_ideal_split_monica(X, y)
 
         left_mask = X[:, best_feature_index] <= best_split_value
         right_mask = X[:, best_feature_index] > best_split_value
@@ -63,17 +63,17 @@ class DecisionTree():
         if(self.max_depth < depth):
             self.max_depth = depth
 
-        #Checks if any split has occured. If none then this is terminal.
-        if len(X_left) == len(X):
-            ### IMPORTANT(KINDA?): IDK why some of these arrays are like [1, 1, 1, 3, 1, 1, 1]. I don't see why it can't split these from our
-            ### code above but I needed to do this otherwise stuck in infinite recursion.
-            ### Anyways just something to think about if you read this and remember to delete this comment if we figure it out/before SUBMISSION
+        # #Checks if any split has occured. If none then this is terminal.
+        # if len(X_left) == len(X):
+        #     ### IMPORTANT(KINDA?): IDK why some of these arrays are like [1, 1, 1, 3, 1, 1, 1]. I don't see why it can't split these from our
+        #     ### code above but I needed to do this otherwise stuck in infinite recursion.
+        #     ### Anyways just something to think about if you read this and remember to delete this comment if we figure it out/before SUBMISSION
 
-            # Returns most frequent value in array 
-            return Node(value = np.argmax(np.bincount(y_left)), depth = depth +1, parent = parent)
+        #     # Returns most frequent value in array 
+        #     return Node(value = np.argmax(np.bincount(y_left)), depth = depth +1, parent = parent)
 
-        if len(X_right) == len(X):
-            return Node(value = np.argmax(np.bincount(y_right)), depth = depth+1, parent = parent)
+        # if len(X_right) == len(X):
+        #     return Node(value = np.argmax(np.bincount(y_right)), depth = depth+1, parent = parent)
 
         node = Node(
             depth = depth,
