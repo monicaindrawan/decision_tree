@@ -120,6 +120,7 @@ def find_best_split_feature(X, y):
     return best_feature_index, best_split_value
 
 
+
 def find_ideal_split_monica(X, y):
     best_gain = float("-inf")
     best_split_value = float("-inf")
@@ -135,8 +136,8 @@ def find_ideal_split_monica(X, y):
                 continue
             split_value = (X_sorted[s,i] + X_sorted[s+1,i])/2.0
 
-            y_left = y_sorted[:s]
-            y_right = y_sorted[s:]
+            y_left = y_sorted[:s+1]
+            y_right = y_sorted[s+1:]
 
             left_entropy = entropy(y_left)
             right_entropy = entropy(y_right)

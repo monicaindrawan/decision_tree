@@ -51,7 +51,7 @@ class DecisionTree():
         if len(np.unique(y)) == 1:
             return Node(value = np.argmax(np.bincount(y)), depth = depth, parent = parent)
         
-        best_feature_index, best_split_value = find_ideal_split_monica(X, y)
+        best_feature_index, best_split_value = find_best_split_feature(X, y)
 
         left_mask = X[:, best_feature_index] <= best_split_value
         right_mask = X[:, best_feature_index] > best_split_value
