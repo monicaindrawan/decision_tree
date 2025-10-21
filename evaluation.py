@@ -96,8 +96,9 @@ def nested_cross_validation(X, y):
             tree = DecisionTree()
             tree.fit(x_train, y_train)
             tree.prune_tree(x_val, y_val)
-            y_predictions = tree.predict(x_test)
-            accuracy = accuracy(y_test, y_predictions)
+            accuracy = evalute((x_test, y_test), tree)
+            #y_predictions = tree.predict(x_test)
+            #accuracy = accuracy(y_test, y_predictions)
             running_sum_accuracy += accuracy
 
     average_accuracy = running_sum_accuracy/(n_outer_folds*n_inner_folds)
@@ -164,7 +165,6 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
             confusion[i, j] = frequency_dict.get(class_label, 0)
 
     return confusion
-
 
 
 
