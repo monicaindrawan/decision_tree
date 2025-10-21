@@ -1,4 +1,6 @@
-
+import numpy as np
+from Tree import DecisionTree
+from evaluation import *
 
 
 def cross_validation(X_data, y_data, k=10):
@@ -34,6 +36,7 @@ def cross_validation(X_data, y_data, k=10):
     
     average_accuracy = np.mean(scores)
     return average_accuracy
+
 
 def nested_cross_validation(X, y):
     n_outer_folds = 10
@@ -75,6 +78,11 @@ def nested_cross_validation(X, y):
     average_f1 = f1_score(average_precision[0], average_recall[0])
 
 
-
-    print(average_confusion_matrix, average_accuracy, average_precision, average_recall, average_f1)
-
+    print(f"confusion matrix: \n {average_confusion_matrix}")
+    print(f"average accuracy: {average_accuracy}")  
+    print(f"average precision per class: {average_precision[0]}")
+    print(f"macro average precision: {average_precision[1]}")
+    print(f"average recall per class: {average_recall[0]}")
+    print(f"macro average recall: {average_recall[1]}")
+    print(f"average F1 per class: {average_f1[0]}")
+    print(f"macro average F1: {average_f1[1]}")

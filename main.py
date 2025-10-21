@@ -1,6 +1,7 @@
 import numpy as np
 from Tree import DecisionTree
 from evaluation import *
+from cross_eval import nested_cross_validation
 
 def load_data(file):
     data = np.loadtxt(file)
