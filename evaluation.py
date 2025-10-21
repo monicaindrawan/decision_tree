@@ -38,6 +38,95 @@ def cross_validation(X_data, y_data, k=10):
     return average_accuracy
 
 
+<<<<<<< HEAD
+=======
+def train_val_test_k_fold(n_folds, n_instances):
+    """ Generate train and test indices at each fold.
+    
+    Args:
+        n_folds (int): Number of folds
+        n_instances (int): Total number of instances
+
+    Returns:
+        list: a list of length n_folds. Each element in the list is a list (or tuple) 
+            with three elements: 
+            - a numpy array containing the train indices
+            - a numpy array containing the val indices 
+            - a numpy array containing the test indices
+    """
+
+    # split the dataset into k splits
+    split_indices = k_fold_split(n_folds, n_instances)
+
+    folds = []
+    for k in range(n_folds):
+        # pick k as test, and k+1 as validation (or 0 if k is the final split)
+        test_indices = split_indices[k]
+        val_indices = split_indices[(k+1) % n_folds]
+
+        # concatenate remaining splits for training
+        train_indices = np.zeros((0, ), dtype=np.int)
+        for i in range(n_folds):
+            # concatenate to training set if not validation or test
+            if i not in [k, (k+1) % n_folds]:
+                train_indices = np.hstack([train_indices, split_indices[i]])
+
+        folds.append([train_indices, val_indices, test_indices])
+        
+    return folds
+
+
+def nested_cross_validation(X, y):
+    n_outer_folds = 10
+    n_inner_folds = 9
+    running_sum_accuracy = 0
+
+    for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(x))):
+        x_trainval = X[train_indices, :]
+        y_trainval = y[trainval_indices]
+        x_test = x[test_indices, :]
+        y_test = y[test_indices]
+
+        splits = train_test_k_fold(n_inner_folds, len(x_trainval))
+
+        for (train_indices, val_indices) in splits:
+            x_train = x_trainval[train_indices, :]
+            y_train = y_trainval[train_indices]
+            x_val = x_trainval[val_indices, :]
+            y_val = y_trainval[val_indices]
+
+            tree = DecisionTree()
+            tree.fit(x_train, y_train)
+            tree.prune_tree(x_val, y_val)
+            accuracy = evalute((x_test, y_test), tree)
+            #y_predictions = tree.predict(x_test)
+            #accuracy = accuracy(y_test, y_predictions)
+            running_sum_accuracy += accuracy
+
+    average_accuracy = running_sum_accuracy/(n_outer_folds*n_inner_folds)
+
+
+def evaluate(test_db, trained_tree):
+    """
+    Calculate the accuracy from validation dataset
+
+    Args:
+        test_db : tuple of np.ndarray, shape (n_samples, n_features), (n_samples, 1)
+        trained_tree : class, Decision tree node
+
+    Returns:
+        accuracy : int
+            The model accuracy with regards to the validation data 
+    """
+    test_data, test_classes = test_db
+
+    predicted_classes = trained_tree.predict(test_data)
+    accuracy = np.sum(predicted_classes == test_classes)/len(test_data)
+    
+    return accuracy
+
+
+>>>>>>> 51ecae53225bc13daaee6f84e649fecb9d7ba97c
 
 def confusion_matrix(y_gold, y_prediction, class_labels=None):
     """ Compute the confusion matrix.
@@ -79,7 +168,6 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
             confusion[i, j] = frequency_dict.get(class_label, 0)
 
     return confusion
-
 
 
 
