@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from Support import *
 
 
@@ -183,4 +184,39 @@ class DecisionTree():
                 break
 
             layer += 1
-     
+    
+    def plot_tree(self, node=None, coordinates = (0,0), depth=0, vertical_distance=0.8, horizontal_distance=50):
+        x, y = coordinates
+        #plt.xlim(-90, 110)
+        #plt.ylim(-60, 1)
+        
+        if node is None:
+            node = self.root
+            plt.figure(figsize=(25, 15))
+            #plt.figure(figsize=(30,15))
+            #plt.text(x, y, node_label, va="center", ha="center", color='green', bbox=dict(facecolor='lightgreen', edgecolor='green', boxstyle='round'), fontsize=5)
+
+        if node.is_terminal_node():
+            #print(node.depth)
+            node_label = f"leaf: {node.value}"
+            plt.text(x, y, node_label, va="center", ha="center", color='green', bbox=dict(facecolor='lightblue', edgecolor='blue', boxstyle='round'), fontsize=5)
+        else:
+            node_label = f"[X{node.feature}≤{node.threshold}]"
+            plt.text(x, y, node_label, va="center", ha="center", bbox=dict(facecolor='lightgreen', edgecolor='green', boxstyle='round'), fontsize=5)
+
+        if node.left is not None:
+            x_left = x - max(horizontal_distance / (2**depth+1), 2)
+            y_left = y - vertical_distance
+            plt.plot([x, x_left], [y, y_left], "-", linewidth=0.7, color="orange")
+            self.plot_tree(node.left, coordinates=(x_left,y_left), depth=depth+1)
+        
+        if node.right is not None:
+            x_right = x + max(horizontal_distance / (2**depth+1), 2)
+            y_right = y - vertical_distance
+            plt.plot([x, x_right], [y, y_right], "-", linewidth=0.7, color="black")
+            self.plot_tree(node.right, coordinates=(x_right,y_right), depth=depth+1)
+        plt.title("Decision tree visualisation")
+        #plt.tight_layout()
+        #plt.axis('equal')
+        #plt.axis('off')
+        #plt.autoscale()
