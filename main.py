@@ -2,14 +2,8 @@ import numpy as np
 from Tree import DecisionTree
 from evaluation import *
 from cross_eval import nested_cross_validation
+from Support import load_data
 
-def load_data(file):
-    data = np.loadtxt(file)
-
-    x = data[:, :-1]
-    y = data[:, -1].astype(int)
-
-    return x, y
 
 X_noisy, y_noisy = load_data("wifi_db/noisy_dataset.txt")
 X_clean, y_clean = load_data("wifi_db/clean_dataset.txt")
@@ -28,7 +22,7 @@ tree.fit(X_train_noisy, y_train_noisy)
 # tree.fit(X_train_clean, y_train_clean)
 
 accuracy = evaluate(val_db, tree)
-tree.prune_tree(X_val_noisy, y_val_noisy)
+# tree.prune_tree(X_val_noisy, y_val_noisy)
 # cross_validation_accuracy = cross_validation(X_noisy, y_noisy)
 # print(cross_validation_accuracy)
 

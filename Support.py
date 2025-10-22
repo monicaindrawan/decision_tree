@@ -2,6 +2,15 @@ import numpy as np
 
 
 
+def load_data(file):
+    data = np.loadtxt(file)
+
+    x = data[:, :-1]
+    y = data[:, -1].astype(int)
+
+    return x, y
+
+
 def entropy(y):
     s = 0
     for class_label in np.unique(y):
@@ -13,8 +22,7 @@ def entropy(y):
 
 def find_ordered_value_changes(X, y, index):
     """
-    Identify positions where the target variable y changes when the dataset
-    is sorted by a single feature column in X.
+    Identify positions where each feature column of X changes when the dataset is sorted by it.
 
     Args:
         X : np.ndarray, shape (n_samples, n_features)
