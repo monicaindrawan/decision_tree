@@ -49,12 +49,22 @@ from tree import DecisionTree
 
 if __name__ == "__main__":
     # Load the data
-    X_clean, y_clean = load_data("wifi_db/clean_dataset.txt")     # Replace load_data argument with the path of any data.txt files
+    X, y = load_data("wifi_db/noisy_dataset.txt")     # Replace load_data argument with the path of any data.txt files
 
-    # Construct and fit the decision tree classifier
-    classifier = DecisionTree()
-    classifier.fit(X_clean, y_clean)
+    # Split the dataset for training and testing
+    X_train, y_train = (X[20:], y[20:])
+    X_test, y_test = (X[:20], y[:20])
+
+    # Construct and train the decision tree classifier
+    decision_tree_classifier = DecisionTree()
+    decision_tree_classifier.fit(X_train, y_train)
     
     # Visualise the tree
-    classifier.plot_tree()
+    decision_tree_classifier.plot_tree()
+
+    # Prune the tree
+    decision_tree_classifier.prune_tree(X_test, y_test)
+
+    # Visualise the pruned tree
+    decision_tree_classifier.plot_tree()
 ````
