@@ -39,7 +39,7 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
     # the union of the ground truth annotation and the prediction
     if not class_labels:
         class_labels = np.unique(np.concatenate((y_gold, y_prediction)))
-        print(class_labels)
+        # print(class_labels)
 
     confusion = np.zeros((len(class_labels), len(class_labels)))
 

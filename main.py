@@ -9,9 +9,20 @@ if __name__ == "__main__":
     X_clean, y_clean = load_data("wifi_db/clean_dataset.txt")
 
     # Run this for cross validation on unpruned tree
-    cross_validation(X_noisy, y_noisy)
-    cross_validation(X_clean, y_clean)
+    cv_noisy_metrics = cross_validation(X_noisy, y_noisy)
+    cv_clean_metrics = cross_validation(X_clean, y_clean)
 
     # Run this for nested cross validation on pruned tree
-    nested_cross_validation(X_noisy, y_noisy)
-    nested_cross_validation(X_clean, y_clean)
+    cv_nested_noisy_metrics = nested_cross_validation(X_noisy, y_noisy)
+    cv_nested_clean_metrics = nested_cross_validation(X_clean, y_clean)
+
+    # Print out metrics for all 4 cross validations
+    print('\n')
+    print("Cross validation metrics for unpruned tree on the clean dataset")
+    print(" Accuracy: ", cv_clean_metrics[0], '\n', "Precision: ", cv_clean_metrics[1], '\n', "Recall: ", cv_clean_metrics[2], '\n', "F1: ", cv_clean_metrics[3], '\n')
+    print("Cross validation metrics for unpruned tree on the noisy dataset")
+    print(" Accuracy: ", cv_noisy_metrics[0], '\n', "Precision: ", cv_noisy_metrics[1], '\n', "Recall: ", cv_noisy_metrics[2], '\n', "F1: ", cv_noisy_metrics[3], '\n')
+    print("Cross validation metrics for pruned tree on the clean dataset")
+    print(" Accuracy: ", cv_nested_clean_metrics[0], '\n', "Precision: ", cv_nested_clean_metrics[1], '\n', "Recall: ", cv_nested_clean_metrics[2], '\n', "F1: ", cv_nested_clean_metrics[3], '\n')
+    print("Cross validation metrics for pruned tree on the noisy dataset")
+    print(" Accuracy: ", cv_nested_noisy_metrics[0], '\n', "Precision: ", cv_nested_noisy_metrics[1], '\n', "Recall: ", cv_nested_noisy_metrics[2], '\n', "F1: ", cv_nested_noisy_metrics[3], '\n')

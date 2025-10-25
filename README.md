@@ -15,7 +15,7 @@ A Python implementation of a decision tree classifier from scratch. The classifi
 ## Project Structure
 
 All Python source files are under the root directory
-- `main.py`: The main and the entry point of the project. It imports from all other python files and calls the functions for decision tree construction, pruning, visualisation as well as all evaluations.
+- `main.py`: The main and the entry point of the project. The final and current iteration performs the standard and the nested cross validation for both the clean and noisy datasets, and prints out the evaluation metrics.
 - `tree.py`: Contains the core `DecisionTree` class, including the methods for `fit`, `predict`, `prune_tree` and `plot_tree`.
 - `support.py`: Includes the `load_data` function as well as the `find_best_split_feature` function for information gain calculations used to construct the tree.
 - `evaluation.py`: Contains functions for obtaining the confusion matrix and evaluation metrics.
@@ -36,3 +36,6 @@ Besides the standard Python libraries, the project uses the following packages, 
 
 1. Make sure to change to the root directory of the project, which is the directory containing all of the Python source files.
 2. Run the main Python file by executing the command `python -u main.py`.
+
+
+### Example Code

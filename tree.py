@@ -213,6 +213,7 @@ class DecisionTree():
 
         return max_depth_before_pruning, max_depth_after_pruning
     
+    
     def plot_tree(self, node=None, coordinates = (0,0), depth=0, vertical_distance=0.8, horizontal_distance=50):
         x, y = coordinates
         #plt.xlim(-90, 110)
