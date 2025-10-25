@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def evaluate(test_db, trained_tree):
     """
     Calculate the accuracy from validation dataset

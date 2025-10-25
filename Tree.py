@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Support import *
+from support import *
 from evaluation import accuracy
 
 

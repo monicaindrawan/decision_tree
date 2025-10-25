@@ -1,5 +1,5 @@
 import numpy as np
-from Tree import DecisionTree
+from tree import DecisionTree
 from evaluation import *
 
 # For reproducibility
