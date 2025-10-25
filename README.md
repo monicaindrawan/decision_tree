@@ -38,4 +38,23 @@ Besides the standard Python libraries, the project uses the following packages, 
 2. Run the main Python file by executing the command `python -u main.py`.
 
 
-### Example Code
+The final version of the `main.py` abstracts most of the functionalities into 2 variants of the cross validation functions, where these function calls handle all of tree construction, fitting and evaluation, with the goal of producing the final cross validated metrics. As such, the individual component calls are not present in `main.py`, an example is provided below to demonstrate them:
+
+## Example Code
+### Tree construction and visualisation:
+````python
+from support import load_data
+from tree import DecisionTree
+
+
+if __name__ == "__main__":
+    # Load the data
+    X_clean, y_clean = load_data("wifi_db/clean_dataset.txt")     # Replace load_data argument with the path of any data.txt files
+
+    # Construct and fit the decision tree classifier
+    classifier = DecisionTree()
+    classifier.fit(X_clean, y_clean)
+    
+    # Visualise the tree
+    classifier.plot_tree()
+````
