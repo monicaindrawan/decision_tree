@@ -38,6 +38,7 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
     # the union of the ground truth annotation and the prediction
     if not class_labels:
         class_labels = np.unique(np.concatenate((y_gold, y_prediction)))
+        print(class_labels)
 
     confusion = np.zeros((len(class_labels), len(class_labels)))
 
@@ -62,7 +63,6 @@ def confusion_matrix(y_gold, y_prediction, class_labels=None):
     return confusion
 
 
-
 def accuracy(y_gold, y_prediction):
     """ Compute the accuracy given the ground truth and predictions
 
@@ -80,7 +80,6 @@ def accuracy(y_gold, y_prediction):
         return np.sum(y_gold == y_prediction) / len(y_gold)
     except ZeroDivisionError:
         return 0.
-
 
 
 def accuracy_from_confusion(confusion):
@@ -136,7 +135,6 @@ def precision_from_confusion(confusion):
         macro_p = np.mean(p)
 
     return (p, macro_p)
-
 
 
 def recall_from_confusion(confusion):
@@ -229,7 +227,6 @@ def k_fold_split(n_splits, n_instances, random_generator = np.random.default_rng
     split_indices = np.array_split(shuffled_indices, n_splits)
 
     return split_indices
-
 
 
 def train_test_k_fold(n_folds, n_instances, random_generator = np.random.default_rng()):

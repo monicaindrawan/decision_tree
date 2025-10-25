@@ -2,8 +2,10 @@ import numpy as np
 from Tree import DecisionTree
 from evaluation import *
 
+# For reproducibility
+random_generator = np.random.default_rng(seed = 42)
 
-def cross_validation(X_data, y_data, k=10):
+def cross_validation(X, y, k=10):
     """
     Calculate the accuracy from validation dataset using 10 cross validation approach
 
@@ -15,24 +17,22 @@ def cross_validation(X_data, y_data, k=10):
         average_accuracy : int
             The average accuracy with regards to the validation data
     """
-    X_folds = np.array_split(X_data, k)
-    y_folds = np.array_split(y_data, k)
 
     confusion_matrix_list = []
     count = 0
 
-    for i in range(k):
-        x_test = X_folds[i]
-        y_test = y_folds[i]
-
-        x_train = np.vstack(X_folds[:i] + X_folds[i+1:])
-        y_train = np.hstack(y_folds[:i] + y_folds[i+1:])
+    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(k, len(X), random_generator)):
+        x_train = X[train_indices, :]
+        y_train = y[train_indices]
+        x_test = X[test_indices, :]
+        y_test = y[test_indices]
 
         tree = DecisionTree()
 
         tree.fit(x_train, y_train)
         predictions = tree.predict(x_test)
         confusion_matrix_list.append(confusion_matrix(y_test, predictions))
+        #print(confusion_matrix_list)
         count += 1
         print(count)
 
@@ -61,7 +61,7 @@ def nested_cross_validation(X, y):
     count = 0
     confusion_matrix_list = []
 
-    for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(X), random_generator = np.random.default_rng())):
+    for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(X), random_generator)):
         x_trainval = X[trainval_indices, :]
         y_trainval = y[trainval_indices]
         x_test = X[test_indices, :]
