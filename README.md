@@ -1,6 +1,6 @@
 # Decision Tree Group Project
 
-A Python implementation of a decision tree classifier from scratch.
+A Python implementation of a decision tree classifier from scratch. The classifier trained on datasets to determine one of four possible locations based on the signal strength data collected from a mobile phone. 
 
 
 ## Core Features
@@ -20,13 +20,14 @@ All Python source files are under the root directory
 - `support.py`: Includes the `load_data` function as well as the `find_best_split_feature` function for information gain calculations used to construct the tree.
 - `evaluation.py`: Contains functions for obtaining the confusion matrix and evaluation metrics.
 - `cross_eval.py`: Implements both standard `cross_validation` and `nested_cross_validation` functions.
+- `wifi_db`: Folder which contains the clean and noisy datasets.
 
 
 ## Getting Started
 
 ### Prerequisites
 
-Besides the standard Python libraries, the project uses:
+Besides the standard Python libraries, the project uses the following packages, make sure the active Python environment contains:
 - `numpy`
 - `matplotlib`
 
