@@ -60,6 +60,8 @@ def nested_cross_validation(X, y):
     running_sum_accuracy = 0
     count = 0
     confusion_matrix_list = []
+    total_max_depth_before = 0
+    total_max_depth_after = 0
 
     for i, (trainval_indices, test_indices) in enumerate(train_test_k_fold(n_outer_folds, len(X), random_generator)):
         x_trainval = X[trainval_indices, :]
@@ -77,17 +79,26 @@ def nested_cross_validation(X, y):
 
             tree = DecisionTree()
             tree.fit(x_train, y_train)
-            tree.prune_tree(x_val, y_val)
+
+            max_depth_before, max_depth_after = tree.prune_tree(x_val, y_val)
+            total_max_depth_before += max_depth_before
+            total_max_depth_after += max_depth_after
+            
+            
             predictions = tree.predict(x_test)
             confusion_matrix_list.append(confusion_matrix(y_test, predictions))
             count += 1
             print(count)
+
 
     average_confusion_matrix = np.sum(confusion_matrix_list, axis=0)/(n_outer_folds*n_inner_folds)
     average_accuracy = accuracy_from_confusion(average_confusion_matrix)
     average_precision = precision_from_confusion(average_confusion_matrix)
     average_recall = recall_from_confusion(average_confusion_matrix)
     average_f1 = f1_score(average_precision[0], average_recall[0])
+
+    average_max_depth_before = total_max_depth_before / count
+    average_max_depth_after = total_max_depth_after / count
 
 
     print(f"confusion matrix: \n {average_confusion_matrix}")
@@ -98,3 +109,5 @@ def nested_cross_validation(X, y):
     print(f"macro average recall: {average_recall[1]}")
     print(f"average F1 per class: {average_f1[0]}")
     print(f"macro average F1: {average_f1[1]}")
+    print(f"average max depth before pruning: {average_max_depth_before}")
+    print(f"average max depth before pruning: {average_max_depth_after}")

@@ -24,6 +24,22 @@ class Node():
             return False
         else:
             return True
+        
+        
+    def get_max_depth(self):
+        #base case
+        if self.is_terminal_node():
+            return 1
+        
+        #recursive case
+        left_depth = 0
+        right_depth = 0
+        if self.left:
+            left_depth = self.left.get_max_depth()
+        if self.right:
+            right_depth = self.right.get_max_depth()
+        
+        return max(left_depth, right_depth) + 1
 
 
 class DecisionTree():
@@ -31,7 +47,6 @@ class DecisionTree():
     """
     def __init__(self):
         self.root = None
-        self.max_depth = 0
 
 
     def fit(self, X, y, depth = 0, parent = None):
@@ -61,9 +76,6 @@ class DecisionTree():
         X_left, y_left = X[left_mask], y[left_mask]
         X_right, y_right = X[right_mask], y[right_mask]
 
-        # print(X_left.shape, X_right.shape)
-        if(self.max_depth < depth):
-            self.max_depth = depth
 
         node = Node(
             depth = depth,
@@ -80,7 +92,6 @@ class DecisionTree():
 
         if depth == 0:
             self.root = node
-            print(f"maximum depth: {self.max_depth}")
         return node
     
 
@@ -149,7 +160,6 @@ class DecisionTree():
         """
         predicted_classes = self.predict(X_val)
         accuracy_pre_merge = accuracy(y_val, predicted_classes)
-        print(f"Pre merge accuracy: {accuracy_pre_merge}")
 
         side = "left" if mergable_node is parent_node.left else "right"
         original = getattr(parent_node, side)
@@ -157,10 +167,8 @@ class DecisionTree():
 
         predicted_classes = self.predict(X_val)
         accuracy_post_merge = accuracy(y_val, predicted_classes)
-        print(f"Post merge accuracy: {accuracy_post_merge}")
 
         if accuracy_post_merge < accuracy_pre_merge:
-            print("Reverting merge")
             setattr(parent_node, side, original)
             return False
         return True
@@ -175,7 +183,9 @@ class DecisionTree():
         Returns:
             None
         """
-        layer = 0    
+        layer = 0
+        max_depth_before_pruning = self.root.get_max_depth()
+
         while True:
             num_of_pruned_nodes = 0
             mergable_nodes = []
@@ -193,15 +203,15 @@ class DecisionTree():
                 if self._try_merge(parent_node, mergable_node, merged_node, X_val, y_val):
                     num_of_pruned_nodes += 1
 
-            print(f"Number of pruned nodes on this layer: {num_of_pruned_nodes}")
-
-            print(f"Number of layer: {layer}")
-            print()
 
             if num_of_pruned_nodes == 0:
                 break
 
             layer += 1
+        
+        max_depth_after_pruning = self.root.get_max_depth()
+
+        return max_depth_before_pruning, max_depth_after_pruning
     
     def plot_tree(self, node=None, coordinates = (0,0), depth=0, vertical_distance=0.8, horizontal_distance=50):
         x, y = coordinates
