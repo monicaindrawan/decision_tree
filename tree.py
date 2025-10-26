@@ -1,14 +1,25 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from support import *
 from evaluation import accuracy
 
 
 class Node():
-    """ Node class that contains information on splitting decision by the tree or contains the final value if it is a terminal node.
-    
+    """A node in the decision tree.
+
+    Attributes:
+        value (int): The predicted class value if the node is a leaf. None for internal nodes.
+        depth (int): The depth of the node in the tree (root is 0).
+        left (Node): The left child node.
+        right (Node): The right child node.
+        parent (Node): The parent of this node.
+        threshold (float): The feature value used to split at this node. None for leaf nodes.
+        feature (int): The index of the feature used for splitting at this node. None for leaf nodes.
+        dominant_y (int): The most frequent class label in the data subset that reached this node. Used for pruning.
     """
     def __init__(self, value = None, left = None, right = None, parent = None, threshold = None, feature = None, depth = 0, dominant_y = None):
+        """
+        Constructor for Node, initialises the member attributes
+        """
         self.value = value
         self.depth = depth
         self.left = left
@@ -20,6 +31,11 @@ class Node():
 
     
     def is_terminal_node(self):
+        """Checks if the node is a terminal node.
+
+        Returns:
+            bool: True if the node is a terminal node, False otherwise.
+        """
         if self.value is None:
             return False
         else:
@@ -27,6 +43,13 @@ class Node():
         
         
     def get_max_depth(self):
+        """Recursively calculates the depth of the subtree rooted at this node.
+
+        The depth is the number of nodes on the longest pathfrom this node to a leaf (inclusive). A single leaf node has depth 1.
+
+        Returns:
+            int: The depth of the subtree starting from this node.
+        """
         #base case
         if self.is_terminal_node():
             return 1
@@ -214,45 +237,48 @@ class DecisionTree():
         return max_depth_before_pruning, max_depth_after_pruning
     
 
-    def _plot_tree_recursive(self, node=None, coordinates = (0,0), depth=0, vertical_distance=0.8, horizontal_distance=50):
-        x, y = coordinates
-        #plt.xlim(-90, 110)
-        #plt.ylim(-60, 1)
+
+    # Plotting functions moved to visualisation.py. This is to ensure the lab machine can execute the core tree code without needing to import matplotlib
+
+    # def _plot_tree_recursive(self, node=None, coordinates = (0,0), depth=0, vertical_distance=0.8, horizontal_distance=50):
+    #     x, y = coordinates
+    #     #plt.xlim(-90, 110)
+    #     #plt.ylim(-60, 1)
         
-        if node.is_terminal_node():
-            #print(node.depth)
-            node_label = f"leaf: {node.value}"
-            plt.text(x, y, node_label, va="center", ha="center", color='green', bbox=dict(facecolor='lightblue', edgecolor='blue', boxstyle='round'), fontsize=5)
-        else:
-            node_label = f"[X{node.feature}≤{node.threshold}]"
-            plt.text(x, y, node_label, va="center", ha="center", bbox=dict(facecolor='lightgreen', edgecolor='green', boxstyle='round'), fontsize=5)
+    #     if node.is_terminal_node():
+    #         #print(node.depth)
+    #         node_label = f"leaf: {node.value}"
+    #         plt.text(x, y, node_label, va="center", ha="center", color='green', bbox=dict(facecolor='lightblue', edgecolor='blue', boxstyle='round'), fontsize=5)
+    #     else:
+    #         node_label = f"[X{node.feature}≤{node.threshold}]"
+    #         plt.text(x, y, node_label, va="center", ha="center", bbox=dict(facecolor='lightgreen', edgecolor='green', boxstyle='round'), fontsize=5)
 
-        if node.left is not None:
-            x_left = x - max(horizontal_distance / (2**depth+1), 2)
-            y_left = y - vertical_distance
-            plt.plot([x, x_left], [y, y_left], "-", linewidth=0.7, color="orange")
-            self._plot_tree_recursive(node.left, coordinates=(x_left,y_left), depth=depth+1)
+    #     if node.left is not None:
+    #         x_left = x - max(horizontal_distance / (2**depth+1), 2)
+    #         y_left = y - vertical_distance
+    #         plt.plot([x, x_left], [y, y_left], "-", linewidth=0.7, color="orange")
+    #         self._plot_tree_recursive(node.left, coordinates=(x_left,y_left), depth=depth+1)
         
-        if node.right is not None:
-            x_right = x + max(horizontal_distance / (2**depth+1), 2)
-            y_right = y - vertical_distance
-            plt.plot([x, x_right], [y, y_right], "-", linewidth=0.7, color="black")
-            self._plot_tree_recursive(node.right, coordinates=(x_right,y_right), depth=depth+1)
+    #     if node.right is not None:
+    #         x_right = x + max(horizontal_distance / (2**depth+1), 2)
+    #         y_right = y - vertical_distance
+    #         plt.plot([x, x_right], [y, y_right], "-", linewidth=0.7, color="black")
+    #         self._plot_tree_recursive(node.right, coordinates=(x_right,y_right), depth=depth+1)
         
-        #plt.tight_layout()
-        #plt.axis('equal')
-        #plt.axis('off')
-        #plt.autoscale()
+    #     #plt.tight_layout()
+    #     #plt.axis('equal')
+    #     #plt.axis('off')
+    #     #plt.autoscale()
 
 
-    def plot_tree(self, figsize=(16, 10), vertical_distance=0.8, horizontal_distance=50):
-        # Check if the root contains anything
-        if self.root is None:
-            print("Tree is empty.")
-            return
-        plt.figure(figsize=figsize)
-        plt.title("Decision tree visualisation")
+    # def plot_tree(self, figsize=(16, 10), vertical_distance=0.8, horizontal_distance=50):
+    #     # Check if the root contains anything
+    #     if self.root is None:
+    #         print("Tree is empty.")
+    #         return
+    #     plt.figure(figsize=figsize)
+    #     plt.title("Decision tree visualisation")
 
-        # Call the recursive plotting logic
-        self._plot_tree_recursive(self.root, (0,0), 0, vertical_distance, horizontal_distance)
-        plt.show()
+    #     # Call the recursive plotting logic
+    #     self._plot_tree_recursive(self.root, (0,0), 0, vertical_distance, horizontal_distance)
+    #     plt.show()

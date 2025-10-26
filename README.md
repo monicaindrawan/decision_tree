@@ -45,6 +45,8 @@ The final version of the `main.py` abstracts most of the functionalities into 2 
 ````python
 from support import load_data
 from tree import DecisionTree
+# IMPORTANT: Make sure matplotlib is available, if not, do not includes this module
+from visualisation import plot_tree
 
 
 if __name__ == "__main__":
@@ -55,16 +57,14 @@ if __name__ == "__main__":
     X_train, y_train = (X[20:], y[20:])
     X_test, y_test = (X[:20], y[:20])
 
-    # Construct and train the decision tree classifier
+    # Construct and fit the decision tree classifier
     decision_tree_classifier = DecisionTree()
     decision_tree_classifier.fit(X_train, y_train)
     
-    # Visualise the tree
-    decision_tree_classifier.plot_tree()
-
     # Prune the tree
     decision_tree_classifier.prune_tree(X_test, y_test)
 
+    # IMPORTANT: Make sure matplotlib is available
     # Visualise the pruned tree
-    decision_tree_classifier.plot_tree()
+    plot_tree(decision_tree_classifier)
 ````

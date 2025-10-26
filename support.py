@@ -2,6 +2,19 @@ import numpy as np
 
 
 def load_data(file):
+    """
+    Loads data from a text file.
+
+    Assumes the last column is the target variable (y) and all preceding
+    columns are features (x).
+
+    Args:
+        file (str): The path to the data file
+
+    Returns:
+        x (np.ndarray): The feature matrix.
+        y (np.ndarray): The target vector, converted to integer type.
+    """
     data = np.loadtxt(file)
 
     x = data[:, :-1]
@@ -11,6 +24,15 @@ def load_data(file):
 
 
 def entropy(y):
+    """
+    Calculates the Shannon entropy of a set of labels.
+
+    Args:
+        y (np.ndarray):An array of class labels.
+
+    Returns:
+        s (float): The calculated Shannon entropy.
+    """
     s = 0
     for class_label in np.unique(y):
         p = np.sum(class_label == y) / len(y)
@@ -45,12 +67,15 @@ def find_ordered_value_changes(X, y, index):
             The target vector sorted according to column `index`.
     """
     
+    # locate the feature column
     x = X[:, index]
+    # sort based on x feature values
     sorted_indices = np.argsort(x)
     x_sorted = x[sorted_indices]
     y_sorted = y[sorted_indices]
     x_current = x_sorted[0]
     change_index = []
+    # identify the points where x values have changed
     for i in range(1, len(x_sorted)):
         if x_sorted[i] != x_current:
             change_index.append(i)
@@ -67,15 +92,17 @@ def find_ideal_split(x_sorted, y_sorted, splits):
     Args:
         x_sorted (np.array): A list or array of **sorted** feature values.
         y_sorted (np.array): A list or array of corresponding target/class
-                                     labels, **sorted** according to the order in `x_sorted`.
-        splits (np.array): A list of integer indices where a split can occur.
-                                   These indices indicate the point *after* which the
-                                   data is split (i.e., the first element of the right child).
+                             labels, **sorted** according to the order in `x_sorted`.
+        splits (list of int): A list of integer indices where a split can occur.
+                             These indices indicate the point *after* which the
+                             data is split (i.e., the first element of the right child).
 
     Returns:
-        tuple(float): The feature value (split point) that yields the maximum information gain.
-               This is calculated as the midpoint between the last element of the left
-               split and the first element of the right split.
+        split_value (float): The feature value (split point) that yields the maximum
+                             information gain. This is calculated as the midpoint
+                             between the last element of the left split and the
+                             first element of the right split.
+        max_gain (float): The maximum information gain achieved at the best split.
     """
        
     # calculate total entropy
@@ -105,20 +132,36 @@ def find_ideal_split(x_sorted, y_sorted, splits):
 
 
 def find_best_split_feature(X, y):
+    """
+    Finds the best feature and split value to divide the dataset.
+
+    Iterates through all features, finds the optimal split point for each,
+    and returns the feature and split value that yield the highest
+    information gain.
+
+    Args:
+        X (np.ndarray): Feature matrix containing the input data.
+        y (np.ndarray): Target vector or class labels.
+
+    Returns:
+        best_feature_index (int): The column index of the feature that provides the maximum information gain.
+        best_split_value (float): The threshold value for the best feature to split on.
+    """
     max_gain = 0
     best_split_value = 0
     best_feature_index = 0
 
+    # Loop through all feature columns
     for feature_index in range(X.shape[1]):
+        # Find the sorted array and split points
         splits, x_sorted, y_sorted = find_ordered_value_changes(X, y, feature_index)
-
+        # Calculate the best split point on the current feature that yielded highest information gain
         feature_split_value, feature_gain = find_ideal_split(x_sorted, y_sorted, splits)
 
         if feature_index == 0:
             best_split_value = feature_split_value
 
-        #print(feature_index, feature_split_value, feature_gain)
-
+        # Get the best feature the split the tree on and its split condition value
         if feature_gain > max_gain:
             best_split_value = feature_split_value
             max_gain = feature_gain
