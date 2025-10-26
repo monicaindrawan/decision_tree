@@ -1,4 +1,3 @@
-from tree import DecisionTree
 from evaluation import *
 from cross_eval import cross_validation, nested_cross_validation
 from support import load_data
@@ -23,10 +22,26 @@ if __name__ == "__main__":
     # Print out metrics for all 4 cross validations
     print('\n')
     print("Cross validation metrics for unpruned tree on the clean dataset")
-    print("  Accuracy: ", cv_clean_metrics[0], '\n', " Precision: ", cv_clean_metrics[1], '\n', " Recall: ", cv_clean_metrics[2], '\n', " F1: ", cv_clean_metrics[3], '\n')
+    print("  Accuracy: ", cv_clean_metrics[0], '\n',
+           " Precision: ", cv_clean_metrics[1], '\n', 
+           " Recall: ", cv_clean_metrics[2], '\n', 
+           " F1: ", cv_clean_metrics[3], '\n')
     print("Cross validation metrics for unpruned tree on the noisy dataset")
-    print("  Accuracy: ", cv_noisy_metrics[0], '\n', " Precision: ", cv_noisy_metrics[1], '\n', " Recall: ", cv_noisy_metrics[2], '\n', " F1: ", cv_noisy_metrics[3], '\n')
+    print("  Accuracy: ", cv_noisy_metrics[0], '\n', 
+          " Precision: ", cv_noisy_metrics[1], '\n', 
+          " Recall: ", cv_noisy_metrics[2], '\n', 
+          " F1: ", cv_noisy_metrics[3], '\n')
     print("Cross validation metrics for pruned tree on the clean dataset")
-    print("  Accuracy: ", cv_nested_clean_metrics[0], '\n', " Precision: ", cv_nested_clean_metrics[1], '\n', " Recall: ", cv_nested_clean_metrics[2], '\n', " F1: ", cv_nested_clean_metrics[3], '\n', " Average maximum depth before pruning: ", cv_nested_clean_metrics[4], '\n', " Average maximum depth after pruning: ", cv_nested_clean_metrics[5], '\n')
+    print("  Accuracy: ", cv_nested_clean_metrics[0], '\n', 
+          " Precision: ", cv_nested_clean_metrics[1], '\n', 
+          " Recall: ", cv_nested_clean_metrics[2], '\n', 
+          " F1: ", cv_nested_clean_metrics[3], '\n', 
+          " Average maximum depth before pruning: ", cv_nested_clean_metrics[4], '\n', 
+          " Average maximum depth after pruning: ", cv_nested_clean_metrics[5], '\n')
     print("Cross validation metrics for pruned tree on the noisy dataset")
-    print("  Accuracy: ", cv_nested_noisy_metrics[0], '\n', " Precision: ", cv_nested_noisy_metrics[1], '\n', " Recall: ", cv_nested_noisy_metrics[2], '\n', " F1: ", cv_nested_noisy_metrics[3], '\n', " Average maximum depth before pruning: ", cv_nested_noisy_metrics[4], '\n', " Average maximum depth after pruning: ", cv_nested_noisy_metrics[5])
+    print("  Accuracy: ", cv_nested_noisy_metrics[0], '\n', 
+          " Precision: ", cv_nested_noisy_metrics[1], '\n', 
+          " Recall: ", cv_nested_noisy_metrics[2], '\n', 
+          " F1: ", cv_nested_noisy_metrics[3], '\n', 
+          " Average maximum depth before pruning: ", cv_nested_noisy_metrics[4], '\n', 
+          " Average maximum depth after pruning: ", cv_nested_noisy_metrics[5])
