@@ -71,7 +71,7 @@ def nested_cross_validation(X, y):
         x_test = X[test_indices, :]
         y_test = y[test_indices]
 
-        splits = train_test_k_fold(n_inner_folds, len(x_trainval))
+        splits = train_test_k_fold(n_inner_folds, len(x_trainval), random_generator)
 
         for (train_indices, val_indices) in splits:
             x_train = x_trainval[train_indices, :]
