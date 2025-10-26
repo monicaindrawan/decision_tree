@@ -21,7 +21,7 @@ def cross_validation(X, y, k=10):
     confusion_matrix_list = []
     count = 0
 
-    for i, (train_indices, test_indices) in enumerate(train_test_k_fold(k, len(X), random_generator)):
+    for train_indices, test_indices in train_test_k_fold(k, len(X), random_generator):
         x_train = X[train_indices, :]
         y_train = y[train_indices]
         x_test = X[test_indices, :]
@@ -59,7 +59,6 @@ def cross_validation(X, y, k=10):
 def nested_cross_validation(X, y):
     n_outer_folds = 10
     n_inner_folds = 9
-    running_sum_accuracy = 0
     count = 0
     confusion_matrix_list = []
     total_max_depth_before = 0
