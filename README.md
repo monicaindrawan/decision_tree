@@ -16,10 +16,11 @@ A Python implementation of a decision tree classifier from scratch. The classifi
 
 All Python source files are under the root directory
 - `main.py`: The main and the entry point of the project. The final and current iteration of the file performs the standard and the nested cross validation for both the clean and noisy datasets, and prints out the evaluation metrics.
-- `tree.py`: Contains the core `DecisionTree` class, including the methods for `fit`, `predict`, `prune_tree` and `plot_tree`.
+- `tree.py`: Contains the core `DecisionTree` class, including the methods for `fit`, `predict` and `prune_tree`.
 - `support.py`: Includes the `load_data` function as well as the `find_best_split_feature` function for information gain calculations used to construct the tree.
 - `evaluation.py`: Contains functions for obtaining the confusion matrix and evaluation metrics.
 - `cross_eval.py`: Implements both standard `cross_validation` and `nested_cross_validation` functions.
+- `visualisation.py`: Implements the `plot_tree` function to visualise the decision tree.
 - `wifi_db`: Folder which contains the clean and noisy datasets.
 
 
@@ -27,9 +28,7 @@ All Python source files are under the root directory
 
 ### Prerequisites
 
-Besides the standard Python libraries, the project uses the following packages, make sure the active Python environment contains:
-- `numpy`
-- `matplotlib`
+Besides the standard Python libraries, the project uses `numpy`, make sure that it is available in the active Python environment. Optionally, to run the tree visualisation code in visualisation.py, `matplotlib` is also required.
 
 
 ### To Run the Project
@@ -38,7 +37,7 @@ Besides the standard Python libraries, the project uses the following packages, 
 2. Run the main Python file by executing the command `python -u main.py`.
 
 
-The final version of the `main.py` abstracts most of the functionalities into 2 variants of the cross validation functions, where these function calls handle all of tree construction, fitting and evaluation, with the goal of producing the final cross validated metrics. As such, the individual component calls are not present in `main.py`, an example is provided below to demonstrate them:
+The final version of the `main.py` abstracts most of the functionalities into 2 variants of the cross validation functions, where these function calls handle all of tree construction, fitting and evaluation, with the goal of producing the final cross validated metrics. As such, the individual component calls are not present in `main.py`. Furthermore, the lab machines' Python environment do not contain `matplotlib`, therefore `visualisation.py` cannot be tested on them. An example is provided below to demonstrate these components not shown in `main.py`:
 
 ## Example Code
 ### Tree construction and visualisation:
