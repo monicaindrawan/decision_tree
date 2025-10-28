@@ -56,9 +56,9 @@ def find_ordered_value_changes(X, y, index):
             The column index of `X` to use for sorting and analysis.
 
     Returns:
-        change_indices : list of int
-            Indices (in sorted order) where the value of y changes
-            as X[:, index] increases.  
+        change_index : list of int
+            Indices where the sorted feature values in X[:, index] change 
+            as the values increase.  
 
         X_sorted : np.ndarray, shape (n_samples, n_features)
             The feature matrix sorted by column `index`.
