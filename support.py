@@ -1,4 +1,5 @@
 import numpy as np
+from evaluation import train_test_k_fold
 
 
 def load_data(file):
@@ -21,6 +22,42 @@ def load_data(file):
     y = data[:, -1].astype(int)
 
     return x, y
+
+
+def train_test_split(X, y, k=10):
+    """
+    Splits the X and y into train, validation and test datasets
+
+    Args:
+        X (np.ndarray): Feature matrix of shape (n_samples, n_features).
+        y (np.ndarray): Target array of shape (n_samples,) or (n_samples, 1).
+        k (int, optional): Number of folds used to generate indices. Default is 10.
+
+    Returns:
+        tuple: (X_train, y_train, X_val, y_val, X_test, y_test)
+            X_train (np.ndarray): Training features.
+            y_train (np.ndarray): Training labels.
+            X_val (np.ndarray): Validation features.
+            y_val (np.ndarray): Validation labels.
+            X_test (np.ndarray): Test features.
+            y_test (np.ndarray): Test labels.
+    """
+    fold = train_test_k_fold(k, len(X))[0]
+    train_val_indices, test_indices = fold[0], fold[1]
+    fold2 = train_test_k_fold(k, len(train_val_indices))[0]
+    train_indices, val_indices = fold2[0], fold2[1]
+
+
+    X_trainval = X[train_val_indices, :]
+    y_trainval = y[train_val_indices]
+    X_test = X[test_indices, :]
+    y_test = y[test_indices]
+    X_train = X_trainval[train_indices, :]
+    y_train = y_trainval[train_indices]
+    X_val = X_trainval[val_indices, :]
+    y_val = y_trainval[val_indices]
+
+    return X_train, y_train, X_val, y_val, X_test, y_test 
 
 
 def entropy(y):
