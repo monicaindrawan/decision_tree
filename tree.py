@@ -86,6 +86,7 @@ class DecisionTree():
         
         """
 
+        # Check for most frequent y class
         dominant_y = np.argmax(np.bincount(y))
 
         if len(np.unique(y)) == 1:
@@ -93,13 +94,14 @@ class DecisionTree():
         
         best_feature_index, best_split_value = find_best_split_feature(X, y)
 
+        # calculate the left and right split masks
         left_mask = X[:, best_feature_index] <= best_split_value
         right_mask = X[:, best_feature_index] > best_split_value
         
         X_left, y_left = X[left_mask], y[left_mask]
         X_right, y_right = X[right_mask], y[right_mask]
 
-
+        
         node = Node(
             depth = depth,
             threshold=best_split_value,
@@ -110,9 +112,11 @@ class DecisionTree():
             dominant_y = dominant_y
         )
 
+        # recursively build the left and right subtrees
         node.left = self.fit(X_left, y_left, depth = depth + 1, parent=node)
         node.right = self.fit(X_right, y_right, depth = depth + 1, parent=node)
 
+        # Set root node
         if depth == 0:
             self.root = node
         return node
@@ -181,16 +185,20 @@ class DecisionTree():
         Returns:
             bool : True if node is being pruned
         """
+        # Check accuracy before merging
         predicted_classes = self.predict(X_val)
         accuracy_pre_merge = accuracy(y_val, predicted_classes)
-
+        
+        # Perform the merge
         side = "left" if mergable_node is parent_node.left else "right"
         original = getattr(parent_node, side)
         setattr(parent_node, side, merged_node)
 
+        # Check accuracy after merging
         predicted_classes = self.predict(X_val)
         accuracy_post_merge = accuracy(y_val, predicted_classes)
 
+        # If accuracy decreased, revert the merge
         if accuracy_post_merge < accuracy_pre_merge:
             setattr(parent_node, side, original)
             return False
@@ -208,12 +216,14 @@ class DecisionTree():
         """
         layer = 0
         max_depth_before_pruning = self.root.get_max_depth()
-
+        
+        # Iteratively prune the tree
         while True:
             num_of_pruned_nodes = 0
             mergable_nodes = []
             self._get_node_with_leaves(result_list=mergable_nodes)
 
+            # Create merged nodes and try to prune
             for mergable_node in mergable_nodes:
                 parent_node = mergable_node.parent
 
@@ -226,12 +236,13 @@ class DecisionTree():
                 if self._try_merge(parent_node, mergable_node, merged_node, X_val, y_val):
                     num_of_pruned_nodes += 1
 
-
+            # If no nodes were pruned in this iteration, stop pruning
             if num_of_pruned_nodes == 0:
                 break
 
             layer += 1
         
+        # Get max depth after pruning
         max_depth_after_pruning = self.root.get_max_depth()
 
         return max_depth_before_pruning, max_depth_after_pruning
