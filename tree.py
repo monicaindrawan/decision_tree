@@ -101,6 +101,10 @@ class DecisionTree():
         X_left, y_left = X[left_mask], y[left_mask]
         X_right, y_right = X[right_mask], y[right_mask]
 
+        # If no split is possible, return a terminal node
+        if len(y_left) == 0 or len(y_right) == 0:
+            return Node(value = dominant_y, depth = depth, parent = parent, dominant_y = dominant_y)
+
         
         node = Node(
             depth = depth,
